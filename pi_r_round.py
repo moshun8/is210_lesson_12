@@ -123,3 +123,55 @@ def chudnovsky(depth):
     pi = pi * Decimal(10005).sqrt() / 4270934400
     pi **= -1
     return pi
+
+class Timer2Class(object):
+    '''dicstring'''
+    timer = time.clock if sys.platform[:3] == 'win' else time.time
+
+    def __init__(self, func, *args, **kwargs):
+        '''basic parts of the class'''
+        self.func = func
+        self.args = args
+        self.kwargs = kwargs
+
+    def total(self, reps, func, *pargs, **kargs):
+        '''
+        Total time to run func() reps times.
+        Returns (total time, last result)
+        '''
+        repslist = list(range(reps))
+        start = timer()
+        for i in repslist:
+            ret = func(pargs, kargs)
+        elapsed = timer() - start
+        return (elapsed, ret)
+
+    def bestof(self, func, *pargs, **kargs):
+        '''
+        Quickest func() among reps runs.
+        Returns (best time, last result)
+        '''
+        best = 2 ** 32
+        for i in range(reps):
+            start = timer()
+            ret = func(pargs, kargs)
+            elapsed = timer() - start
+            if elapsed < best: best = elapsed
+        # return (best, ret)
+        return (elapsed, ret)
+
+    def bestoftotal(self, reps1, reps2, func, *pargs, **kargs):
+        '''
+        Best of totals:
+        (best of reps1 runs of (total of reps2 runs of func))
+        '''
+        # return bestof(reps1, total, reps2, func, pargs, kargs)
+        return (reps1, reps2, total)
+
+if __name__ == "__main__":
+
+    n = 1000
+
+    for test in (stdlib, bbp, bellard, chudnovsky):
+        timer2 = Timer2Class(test, n, _reps1=1, _reps=3)
+        print timer2.bestoftotal()
