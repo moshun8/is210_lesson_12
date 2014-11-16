@@ -17,7 +17,8 @@ Works Cited:
 """
 
 import math
-from decimal import *
+# from decimal import *
+from decimal import Decimal
 import time
 import sys
 
@@ -60,7 +61,8 @@ class Timer2Class(object):
             # ret = self.func(*pargs, **kargs)
             ret = self.func(*self.args)
             elapsed = self.timer() - start
-            if elapsed < best: best = elapsed
+            if elapsed < best:
+                best = elapsed
         return (best, ret)
 
     # def bestoftotal(self, reps1, reps2, func, *pargs, **kargs):
@@ -80,25 +82,25 @@ def stdlib(depth):
     :param depth:
     :return:
     """
-    a = Decimal(1.0)
-    b = Decimal(1.0 / math.sqrt(2))
-    t = Decimal(1.0) / Decimal(4.0)
-    p = Decimal(1.0)
+    a_dec = Decimal(1.0)
+    b_dec = Decimal(1.0 / math.sqrt(2))
+    t_dec = Decimal(1.0) / Decimal(4.0)
+    p_dec = Decimal(1.0)
 
     for i in range(depth):
-        at = Decimal((a + b) / 2)
-        bt = Decimal(math.sqrt(a * b))
-        tt = Decimal(t - p * (a - at) ** 2)
-        pt = Decimal(2 * p)
+        at_dec = Decimal((a_dec + b_dec) / 2)
+        bt_dec = Decimal(math.sqrt(a_dec * b_dec))
+        tt_dec = Decimal(t_dec - p_dec * (a_dec - at_dec) ** 2)
+        pt_dec = Decimal(2 * p_dec)
 
-        a = at
-        b = bt
-        t = tt
-        p = pt
+        a_dec = at_dec
+        b_dec = bt_dec
+        t_dec = tt_dec
+        p_dec = pt_dec
 
-    pi = (a + b) ** 2 / (4 * t)
+    pies = (a_dec + b_dec) ** 2 / (4 * t_dec)
 
-    return str(pi)
+    return str(pies)
 
 
 def bbp(depth):
@@ -109,17 +111,17 @@ def bbp(depth):
     :param depth:
     :return:
     """
-    pi = Decimal(0)
+    pies = Decimal(0)
     k = 0
     while k < depth:
-        pi += (Decimal(1) / (16 ** k)) * (
+        pies += (Decimal(1) / (16 ** k)) * (
             (Decimal(4) / (8 * k + 1)) -
             (Decimal(2) / (8 * k + 4)) -
             (Decimal(1) / (8 * k + 5)) -
             (Decimal(1) / (8 * k + 6))
         )
         k += 1
-    return str(pi)
+    return str(pies)
 
 
 def bellard(depth):
@@ -132,10 +134,10 @@ def bellard(depth):
     :param depth:
     :return:
     """
-    pi = Decimal(0)
+    pies = Decimal(0)
     k = 0
     while k < depth:
-        pi += (Decimal(-1) ** k / (1024 ** k)) * (
+        pies += (Decimal(-1) ** k / (1024 ** k)) * (
             Decimal(256) / (10 * k + 1) +
             Decimal(1) / (10 * k + 9) -
             Decimal(64) / (10 * k + 3) -
@@ -145,8 +147,8 @@ def bellard(depth):
             Decimal(1) / (4 * k + 3)
         )
         k += 1
-    pi = pi * 1 / (2 ** 6)
-    return str(pi)
+    pies = pies * 1 / (2 ** 6)
+    return str(pies)
 
 
 def chudnovsky(depth):
@@ -160,10 +162,10 @@ def chudnovsky(depth):
     :param depth:
     :return:
     """
-    pi = Decimal(0)
+    pies = Decimal(0)
     k = 0
     while k < depth:
-        pi += (Decimal(-1) ** k) * (
+        pies += (Decimal(-1) ** k) * (
             Decimal(math.factorial(6 * k)) /
             (
                 (math.factorial(k) ** 3) * (math.factorial(3 * k))
@@ -171,15 +173,15 @@ def chudnovsky(depth):
             (640320 ** (3 * k))
         )
         k += 1
-    pi = pi * Decimal(10005).sqrt() / 4270934400
-    pi **= -1
-    return pi
+    pies = pies * Decimal(10005).sqrt() / 4270934400
+    pies **= -1
+    return pies
 
 
 if __name__ == "__main__":
 
-    n = 1000
+    number = 1000
 
     for test in (stdlib, bbp, bellard, chudnovsky):
-        timer2 = Timer2Class(test, n, _reps1=1, _reps=3)
+        timer2 = Timer2Class(test, number, _reps1=1, _reps=3)
         print timer2.bestoftotal()
