@@ -180,8 +180,8 @@ def chudnovsky(depth):
 
 if __name__ == "__main__":
 
-    number = 1000
+    thenumber = 1000
 
     for test in (stdlib, bbp, bellard, chudnovsky):
-        timer2 = Timer2Class(test, number, _reps1=1, _reps=3)
+        timer2 = Timer2Class(test, thenumber, _reps1=1, _reps=3)
         print timer2.bestoftotal()
