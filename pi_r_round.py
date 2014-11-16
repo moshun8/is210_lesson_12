@@ -134,39 +134,46 @@ class Timer2Class(object):
         self.args = args
         self.kwargs = kwargs
 
-    def total(self, reps, func, *pargs, **kargs):
+    # def total(self, reps, func, *pargs, **kargs):
+    def total(self):
         '''
         Total time to run func() reps times.
         Returns (total time, last result)
         '''
-        repslist = list(range(reps))
-        start = timer()
+        _reps = self.kwargs.pop('_reps', 1000)
+        repslist = list(range(_reps))
+        start = self.timer()
         for i in repslist:
-            ret = func(pargs, kargs)
-        elapsed = timer() - start
+            # ret = self.func(*pargs, **kargs)
+            ret = self.func(*self.args)
+        elapsed = self.timer() - start
         return (elapsed, ret)
 
-    def bestof(self, func, *pargs, **kargs):
+    # def bestof(self, func, *pargs, **kargs):
+    def bestof(self):
         '''
         Quickest func() among reps runs.
         Returns (best time, last result)
         '''
+        _reps = self.kwargs.pop('_reps', 5)
         best = 2 ** 32
-        for i in range(reps):
-            start = timer()
-            ret = func(pargs, kargs)
-            elapsed = timer() - start
+        for i in range(_reps):
+            start = self.timer()
+            # ret = self.func(*pargs, **kargs)
+            ret = self.func(*self.args)
+            elapsed = self.timer() - start
             if elapsed < best: best = elapsed
-        # return (best, ret)
-        return (elapsed, ret)
+        return (best, ret)
 
-    def bestoftotal(self, reps1, reps2, func, *pargs, **kargs):
+    # def bestoftotal(self, reps1, reps2, func, *pargs, **kargs):
+    def bestoftotal(self):
         '''
         Best of totals:
         (best of reps1 runs of (total of reps2 runs of func))
         '''
-        # return bestof(reps1, total, reps2, func, pargs, kargs)
-        return (reps1, reps2, total)
+        _reps1 = self.kwargs.pop('_reps1', 5)
+        return (self.func.__name__, min(self.total() for i in range(_reps1)))
+
 
 if __name__ == "__main__":
 
