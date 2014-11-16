@@ -24,7 +24,7 @@ import sys
 
 
 class Timer2Class(object):
-    '''dicstring'''
+    '''docstring'''
     timer = time.clock if sys.platform[:3] == 'win' else time.time
 
     def __init__(self, func, *args, **kwargs):
@@ -42,7 +42,7 @@ class Timer2Class(object):
         _reps = self.kwargs.pop('_reps', 1000)
         repslist = list(range(_reps))
         start = self.timer()
-        for i in repslist:
+        for _ in repslist:
             # ret = self.func(*pargs, **kargs)
             ret = self.func(*self.args)
         elapsed = self.timer() - start
@@ -56,7 +56,7 @@ class Timer2Class(object):
         '''
         _reps = self.kwargs.pop('_reps', 5)
         best = 2 ** 32
-        for i in range(_reps):
+        for _ in range(_reps):
             start = self.timer()
             # ret = self.func(*pargs, **kargs)
             ret = self.func(*self.args)
@@ -87,7 +87,7 @@ def stdlib(depth):
     t_dec = Decimal(1.0) / Decimal(4.0)
     p_dec = Decimal(1.0)
 
-    for i in range(depth):
+    for _ in range(depth):
         at_dec = Decimal((a_dec + b_dec) / 2)
         bt_dec = Decimal(math.sqrt(a_dec * b_dec))
         tt_dec = Decimal(t_dec - p_dec * (a_dec - at_dec) ** 2)
@@ -180,8 +180,8 @@ def chudnovsky(depth):
 
 if __name__ == "__main__":
 
-    thenumber = 1000
+    NUMBERZ = 1000
 
     for test in (stdlib, bbp, bellard, chudnovsky):
-        timer2 = Timer2Class(test, thenumber, _reps1=1, _reps=3)
+        timer2 = Timer2Class(test, NUMBERZ, _reps1=1, _reps=3)
         print timer2.bestoftotal()
