@@ -22,6 +22,57 @@ import time
 import sys
 
 
+class Timer2Class(object):
+    '''dicstring'''
+    timer = time.clock if sys.platform[:3] == 'win' else time.time
+
+    def __init__(self, func, *args, **kwargs):
+        '''basic parts of the class'''
+        self.func = func
+        self.args = args
+        self.kwargs = kwargs
+
+    # def total(self, reps, func, *pargs, **kargs):
+    def total(self):
+        '''
+        Total time to run func() reps times.
+        Returns (total time, last result)
+        '''
+        _reps = self.kwargs.pop('_reps', 1000)
+        repslist = list(range(_reps))
+        start = self.timer()
+        for i in repslist:
+            # ret = self.func(*pargs, **kargs)
+            ret = self.func(*self.args)
+        elapsed = self.timer() - start
+        return (elapsed, ret)
+
+    # def bestof(self, func, *pargs, **kargs):
+    def bestof(self):
+        '''
+        Quickest func() among reps runs.
+        Returns (best time, last result)
+        '''
+        _reps = self.kwargs.pop('_reps', 5)
+        best = 2 ** 32
+        for i in range(_reps):
+            start = self.timer()
+            # ret = self.func(*pargs, **kargs)
+            ret = self.func(*self.args)
+            elapsed = self.timer() - start
+            if elapsed < best: best = elapsed
+        return (best, ret)
+
+    # def bestoftotal(self, reps1, reps2, func, *pargs, **kargs):
+    def bestoftotal(self):
+        '''
+        Best of totals:
+        (best of reps1 runs of (total of reps2 runs of func))
+        '''
+        _reps1 = self.kwargs.pop('_reps1', 5)
+        return (self.func.__name__, min(self.total() for i in range(_reps1)))
+
+
 def stdlib(depth):
     """
     Calculate Pi using the math.pi from Python standard library
@@ -123,56 +174,6 @@ def chudnovsky(depth):
     pi = pi * Decimal(10005).sqrt() / 4270934400
     pi **= -1
     return pi
-
-class Timer2Class(object):
-    '''dicstring'''
-    timer = time.clock if sys.platform[:3] == 'win' else time.time
-
-    def __init__(self, func, *args, **kwargs):
-        '''basic parts of the class'''
-        self.func = func
-        self.args = args
-        self.kwargs = kwargs
-
-    # def total(self, reps, func, *pargs, **kargs):
-    def total(self):
-        '''
-        Total time to run func() reps times.
-        Returns (total time, last result)
-        '''
-        _reps = self.kwargs.pop('_reps', 1000)
-        repslist = list(range(_reps))
-        start = self.timer()
-        for i in repslist:
-            # ret = self.func(*pargs, **kargs)
-            ret = self.func(*self.args)
-        elapsed = self.timer() - start
-        return (elapsed, ret)
-
-    # def bestof(self, func, *pargs, **kargs):
-    def bestof(self):
-        '''
-        Quickest func() among reps runs.
-        Returns (best time, last result)
-        '''
-        _reps = self.kwargs.pop('_reps', 5)
-        best = 2 ** 32
-        for i in range(_reps):
-            start = self.timer()
-            # ret = self.func(*pargs, **kargs)
-            ret = self.func(*self.args)
-            elapsed = self.timer() - start
-            if elapsed < best: best = elapsed
-        return (best, ret)
-
-    # def bestoftotal(self, reps1, reps2, func, *pargs, **kargs):
-    def bestoftotal(self):
-        '''
-        Best of totals:
-        (best of reps1 runs of (total of reps2 runs of func))
-        '''
-        _reps1 = self.kwargs.pop('_reps1', 5)
-        return (self.func.__name__, min(self.total() for i in range(_reps1)))
 
 
 if __name__ == "__main__":
